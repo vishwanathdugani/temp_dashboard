@@ -1,32 +1,28 @@
-import logging
 import threading
 from fastapi import FastAPI
-from app.api.endpoints import temperature
-from app.mqtt.client import start_mqtt_client
 
-# Setting up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from app.api.endpoints import login, users, devices, temperature
+from app.core import config
+from app.db.base import Base
+from app.db.sessions import engine
+from app.mqtt.client import start_mqtt_listener
 
 app = FastAPI()
 
-app.include_router(temperature.router)
+app.include_router(login.router, tags=["login"])
+app.include_router(users.router, prefix=config.settings.API_V1_STR, tags=["users"])
+app.include_router(devices.router, prefix=config.settings.API_V1_STR, tags=["devices"])
+app.include_router(temperature.router, prefix=config.settings.API_V1_STR, tags=["temperature"])
 
-
-from sqlalchemy import create_engine
-from app.db.sessions import engine  # Import the engine you've already defined
-from app.db.base import Base  # Import the Base you've defined
-
-def create_tables():
-    Base.metadata.create_all(bind=engine)
 
 @app.on_event("startup")
 async def startup_event():
-    logger.info("Starting MQTT client in a background thread...")
-    thread = threading.Thread(target=start_mqtt_client, daemon=True)
-    thread.start()
-    create_tables()
+    """
+    Event that gets triggered on application startup.
+    Starts the MQTT listener using a separate thread.
+    """
+    threading.Thread(target=start_mqtt_listener, daemon=True).start()
+
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    Base.metadata.create_all(bind=engine)

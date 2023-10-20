@@ -5,3 +5,4 @@
 /tests/assets/
 __pycache__
 /tests/report.html
+/alembic

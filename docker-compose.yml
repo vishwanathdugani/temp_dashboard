@@ -1,23 +1,30 @@
 version: '3.8'
 
 services:
-  web:
-    build: .
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
-    networks:
-      - custom_network
 
   db:
     image: postgres
+    container_name: lyv_database
     environment:
       POSTGRES_PASSWORD: mysecretpassword
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      SECRET_KEY: my_secret_key
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - custom_network
+
+  web:
+    build: .
+    environment:
+      - SECRET_KEY=my_secret_key
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
     networks:
       - custom_network
 
