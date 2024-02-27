@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     """Application settings using Pydantic BaseSettings."""
 
     API_V1_STR: str = "/api/v1"
+    ALGORITHM: str = "HS256"
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 300
     POSTGRES_SERVER: str = "db"
