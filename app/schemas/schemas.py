@@ -3,18 +3,6 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 
 
-class PlantBase(BaseModel):
-    pass
-
-
-class SensorBase(BaseModel):
-    pass
-
-
-class SensorReadingBase(BaseModel):
-    pass
-
-
 class UserBase(BaseModel):
     username: str
 
@@ -29,6 +17,8 @@ class User(UserBase):
 
     class Config:
         from_attributes = True
+
+################################################################################################################
 
 
 class PlantBase(BaseModel):
@@ -53,26 +43,33 @@ class Plant(PlantBase):
     class Config:
         from_attributes = True
 
+################################################################################################################
+
 
 class SensorBase(BaseModel):
     type: str
     unit: str
     plant_id: int
 
+
 class SensorCreate(SensorBase):
     pass
+
 
 class SensorUpdate(BaseModel):
     type: Optional[str] = Field(None, description="Type of the sensor (e.g., 'temperature', 'humidity').")
     unit: Optional[str] = Field(None, description="Unit of measurement for the sensor readings (e.g., 'Celsius', '%').")
 
-# Assuming SensorReading is defined elsewhere and imported correctly
+
 class Sensor(SensorBase):
     id: int
     readings: List['SensorReading'] = []
 
     class Config:
-        from_attributes = True  # Adjusted from 'from_attributes' to 'orm_mode'
+        from_attributes = True
+
+################################################################################################################
+
 
 class SensorReadingBase(BaseModel):
     value: float
@@ -94,6 +91,9 @@ class SensorReading(SensorReadingBase):
 
     class Config:
         from_attributes = True
+
+
+################################################################################################################
 
 
 User.model_rebuild()

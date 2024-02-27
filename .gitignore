@@ -4,5 +4,5 @@
 /.idea/
 /tests/assets/
 __pycache__
-/tests/report.html
+/report.html
 /alembic
