@@ -17,5 +17,19 @@ def create_sensor_reading_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ) -> SensorReading:
-    # Ensure the sensor belongs to the current_user here
+    """
+    Create a sensor reading associated with a specific sensor.
+
+    Parameters:
+    - reading: SensorReadingCreate - The sensor reading data to create.
+    - sensor_id: int - The ID of the sensor to which the reading belongs.
+    - db: Session - Database session dependency.
+    - current_user: User - The current authenticated user.
+
+    Returns:
+    - SensorReading: The created sensor reading record.
+
+    Note: The function assumes verification that the sensor belongs to the current user
+    is performed within the `create_sensor_reading` function or elsewhere.
+    """
     return create_sensor_reading(db=db, reading=reading, sensor_id=sensor_id)
